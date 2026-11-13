@@ -1,0 +1,29 @@
+# Firmware binaries — never commit these (untested + Leica copyright)
+*.FW
+*.fw
+*.bin
+*.img
+m11_264*.bin
+looks_fw/
+filmtune_fw/
+filmtune_rich/
+
+# Exported camera profiles (may carry copyright name / serial)
+*.lcse
+
+# Raw calibration frames (large; measured values live in the *_patches.json)
+*.DNG
+*.dng
+*.JPG
+*.jpg
+*.jpeg
+checker_shots/
+checker_shots_bw/
+checker_shots_g20/
+
+# Cruft
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
+venv/
