@@ -44,8 +44,9 @@ Stock verifies 89/89 and covers 100% of the image. The R2Y color tables are entr
 `m11build.py` does all four (`fix_manifest` / `manifest_ok`). An early build missed the
 inner chain, so it verified 88/89 — the camera would likely refuse or mis-read it.
 
-## Still unknown
+## Confirmed on a camera
 
-Whether the camera's **install-time** verification checks anything beyond these MD5s. No
-signature was found, but this has **not been confirmed by an actual flash.** The safe
-failure mode is a refused file; the dangerous one is a flash that starts and fails partway.
+A stock image rebuilt this way, and a tuned image, both installed on an M11 on 2026-11-17.
+The updater checks the TOC header MD5 and every entry MD5 after decompressing and before
+writing (see `flashing-results.md`), so this chain really is what gates an update. The
+compressed stream must also stay inside Leica's limits (64 KB window, no overlapping copies).

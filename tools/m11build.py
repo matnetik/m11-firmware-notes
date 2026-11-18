@@ -22,7 +22,8 @@ import m11fw  # noqa: E402
 
 MIN_MATCH = 4
 CHAIN_MAX = 48
-MAX_MATCH = 1 << 15
+MAX_MATCH = 65534      # Leica's own stream never exceeds 65534
+WINDOW = 65534         # Leica's stream never references further back than 65534 bytes
 
 
 def _emit_varint(out, v):
@@ -60,12 +61,16 @@ def compress(data, E):
             chain = CHAIN_MAX
             maxl = min(MAX_MATCH, n - i)
             while cand >= 0 and chain:
-                if data[cand + best_len] == data[i + best_len]:   # quick reject
+                dist = i - cand
+                if dist > WINDOW:          # stay inside the camera's 64 KB window
+                    break
+                lim = min(maxl, dist)      # never overlap: Leica's stream has no D < L copies
+                if best_len < lim and data[cand + best_len] == data[i + best_len]:   # quick reject
                     l = 0
-                    while l < maxl and data[cand + l] == data[i + l]:
+                    while l < lim and data[cand + l] == data[i + l]:
                         l += 1
                     if l > best_len:
-                        best_len, best_dist = l, i - cand
+                        best_len, best_dist = l, dist
                         if l >= maxl:
                             break
                 cand = prev[cand] - 1

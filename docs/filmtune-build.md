@@ -34,11 +34,13 @@ CC0 row sums every band stay 511–513  (neutrals preserved)
 
 ## The files (in `filmtune_rich/`)
 
-- **`M11_filmtune_2.6.5.FW`** — the tune. 2,926 bytes changed, every one inside the
-  contrast / saturation / CC0 tables or the hash manifest. Version 2.6.5, build counter
-  bumped.
-- **`M11_revert_stock_2.6.6.FW`** — the stock 2.6.4 payload, re-wrapped as 2.6.6 with a
-  higher build counter so it flashes cleanly over the tune and restores stock exactly.
+- **The tune**: 2,926 bytes changed, every one inside the contrast / saturation / CC0 tables
+  or the hash manifest. Flashed as bundle 1.26.36.38, label 2.6.4.2.
+- **Back to stock**: the stock 2.6.4 image under a higher bundle (1.26.36.39, label 2.6.4.3).
+  The updater only installs strictly newer bundles.
+- Earlier builds labelled 2.6.5 / 2.6.6 bumped the second byte of the bundle, which can block
+  Leica's next official update, and used the old compressor. They were superseded and never
+  flashed.
 
 ## Integrity (all verified, independently)
 
@@ -49,14 +51,13 @@ CC0 row sums every band stay 511–513  (neutrals preserved)
 
 ## Honest risk statement
 
-- **The color science is designed by theory, not measured.** There is no test flash. The
-  math (neutral preserved, curves monotonic) checks out, but your own frames are the real
-  proof. I can update the Look Lab preview so you can *see* the new baseline before deciding.
+- **Flashed and running on one M11 since 2026-11-17** (as bundle 1.26.36.38, label 2.6.4.2;
+  see `flashing-results.md`). The colour science is still designed from table math, and
+  ColorChecker measurements of it are next.
 - It is still **one global color science shared by all six looks**, not six — the per-look
   work stays in the profiles.
-- It has **never been flashed on a camera.** If the updater checks something I haven't
-  found, the likely outcome is a refused file (harmless). The real risk is a flash that
-  starts and fails partway — rare, but the brick scenario.
+- The real risk of any flash is power loss partway through the write. The updater verifies
+  every hash before it starts writing, so a bad file gets refused.
 - If you flash: full battery, freshly formatted card, keep `revert_stock` on the card.
   Your profiles survive a flash (the camera offers to save them first).
 
