@@ -46,8 +46,8 @@ CC0 row sums every band stay 511–513  (neutrals preserved)
 
 | File | Outer package MD5 | Inner hash chain (89 files + table) | CC0 rows neutral | Bytes vs stock |
 |---|---|---|---|---|
-| `M11_filmtune_2.6.5.FW` | ✅ | ✅ | ✅ | 2,926 |
-| `M11_revert_stock_2.6.6.FW` | ✅ | ✅ | — | 0 |
+| Film tune (bundle 1.26.36.38) | ✅ | ✅ | ✅ | 2,926 |
+| Back to stock (bundle 1.26.36.39) | ✅ | ✅ | — | 0 |
 
 ## Honest risk statement
 

@@ -101,12 +101,14 @@ def compress(data, E):
     return bytes(out)
 
 
-def assemble(stock_fw, decomp, version=None, build_bump=0x00010000):
+def assemble(stock_fw, decomp, version=None, build_bump=1):
     """Rebuild a .FW around a modified decompressed image.
 
-    build_bump is added to the internal build counter at 0x30 so the updater
-    sees the image as newer than stock. Pass a larger bump for a file meant to
-    flash *after* another modified file (e.g. a revert over a tuned image)."""
+    build_bump is added to the bundle version at 0x30 (stock 2.6.4 = 1.26.36.36). The updater
+    only installs a strictly higher bundle. Bump only the LOWEST byte (default 1) so Leica's
+    next official release still counts as newer; use a higher bump for a file meant to flash
+    after another modified one (e.g. back to stock).
+    """
     E = stock_fw[0x48]
     stream = compress(decomp, E)
     payload = bytes([E]) + stream
@@ -116,7 +118,9 @@ def assemble(stock_fw, decomp, version=None, build_bump=0x00010000):
     hdr[0x18:0x28] = hashlib.md5(payload).digest()        # payload MD5
     if version:
         asc = version.encode() + b"\0"
-        hdr[0x3C:0x3C + len(asc)] = asc
+        if len(asc) > 8:      # label slot is 0x3C-0x43; 0x44-0x47 is a separate header field
+            raise ValueError("release label %r is longer than 7 characters" % version)
+        hdr[0x3C:0x44] = asc + b"\xaa" * (8 - len(asc))   # stock pads the slot with 0xAA
     if build_bump:
         build = struct.unpack_from("<I", hdr, 0x30)[0]   # bump so updater sees it newer
         struct.pack_into("<I", hdr, 0x30, build + build_bump)
@@ -321,7 +325,7 @@ def manifest_ok(d):
     return True
 
 
-def build_layer_a(stock_path, out_dir, version="2.6.5", revert_version="2.6.6"):
+def build_layer_a(stock_path, out_dir, version="2.6.4.1", revert_version="2.6.4.2"):
     import json as _json
     stock = open(stock_path, "rb").read()
     base = m11fw.decompress(stock)
@@ -381,7 +385,7 @@ def build_layer_a(stock_path, out_dir, version="2.6.5", revert_version="2.6.6"):
     regions += fix_manifest(d)
 
     # --- assemble tuned image ------------------------------------------------
-    tuned = assemble(stock, bytes(d), version, build_bump=0x00010000)
+    tuned = assemble(stock, bytes(d), version, build_bump=1)
     red = m11fw.decompress(tuned)
     diffs = [i for i in range(len(base)) if base[i] != red[i]]
     inside = all(any(a <= i < b for a, b in regions) for i in diffs)
@@ -397,7 +401,7 @@ def build_layer_a(stock_path, out_dir, version="2.6.5", revert_version="2.6.6"):
     open(tuned_path, "wb").write(tuned)
 
     # --- assemble revert (stock payload, higher build counter) --------------
-    revert = assemble(stock, base, revert_version, build_bump=0x00020000)
+    revert = assemble(stock, base, revert_version, build_bump=2)
     rev_red = m11fw.decompress(revert)
     revert_ok = rev_red == base and hashlib.md5(revert[0x48:]).digest() == revert[0x18:0x28]
     revert_path = "%s/M11_revert_stock_%s.FW" % (out_dir, revert_version)
