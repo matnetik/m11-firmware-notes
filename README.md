@@ -37,7 +37,7 @@ This repo is the **findings and the tools**, not flashable firmware. See scope b
 | `color-pipeline.md` | The `.FW` container, the `R2Y` parameter database, and which table holds the color matrix / saturation / contrast / gamma / NR. The core map of the JPEG engine, and what a custom baked-in look can and can't change. |
 | `firmware-hash-chain.md` | The inner MD5 manifest that gatekeeps a rebuilt image — the part you **must** repair (per-file + table + outer package) or the camera rejects or mis-reads the file. The hard part. |
 | `flashing-results.md` | **Camera-tested results**, what the updater checks, version numbering, the compression limits a build must respect, and the full R2Y table inventory. Read this before building anything. |
-| `filmtune-build.md` | An experimental global tune: the exact table edits and numbers (matte toe on the contrast curves, widened outer saturation steps, a gentle film color matrix). The build itself is not distributed, and has never been flashed. |
+| `filmtune-build.md` | An experimental global tune: the exact table edits and numbers (matte toe on the contrast curves, widened outer saturation steps, a gentle film color matrix). The build itself is not distributed. It has been flashed and is running on one M11 (see `flashing-results.md`). |
 
 ### `tools/` — scripts (Python 3, standard library)
 All take **your own** stock `.FW`, downloaded from Leica, as input. None is included.

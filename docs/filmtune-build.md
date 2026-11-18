@@ -58,7 +58,7 @@ CC0 row sums every band stay 511–513  (neutrals preserved)
   work stays in the profiles.
 - The real risk of any flash is power loss partway through the write. The updater verifies
   every hash before it starts writing, so a bad file gets refused.
-- If you flash: full battery, freshly formatted card, keep `revert_stock` on the card.
+- If you flash: full battery, freshly formatted card, only one `.FW` on the card, and keep a back-to-stock build (stock image, higher bundle version) ready.
   Your profiles survive a flash (the camera offers to save them first).
 
 A conservative build that leaves Standard/contrast-0 and the color matrix at stock still
