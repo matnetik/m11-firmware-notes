@@ -8,8 +8,14 @@ Status as of 2026-11-18. Tested on one M11, starting from Leica firmware 2.6.4.
 |---|---|---|---|---|
 | A | Leica's stock 2.6.4 image, repacked by `m11build.py` | 1.26.36.37 | 2.6.4.1 | ✅ installed and boots normally. Camera Information shows 2.6.4.1, and profiles and DNG+JPG work. |
 | B | Film tune (`filmtune-build.md`), 2,926 changed bytes in R2Y plus their hashes | 1.26.36.38 | 2.6.4.2 | ✅ installed and boots normally |
+| IMGP(r2y) | **partial** update: only `img/data/r2y.bin` (~16 KB file), bundle type `IMGP` | unchanged | 2.6.4.s | ✅ installed in ~2 s. Version **stayed** on the prior value; JPEG colours changed exactly as the edited tables predicted. See `partial-updates.md`. |
+| R | Leica's stock 2.6.4 image, `+0x34` "from" field set to 1 (a **downgrade**) | 1.26.36.36 | 2.6.4 | ✅ offered and installed from a higher modified version; Camera Information went back to 2.6.4. |
 
-So the method in this repo is confirmed on a real camera: window-safe packing, the inner hash-chain repair, the 8-byte label slot and the version bump.
+So, confirmed on a real camera: window-safe packing, the inner hash-chain repair, the 8-byte label
+slot and the version bump (A/B); **partial IMGP updates** that touch one parameter block without a
+version bump or RTOS rewrite (IMGP); and a **real downgrade** to stock via the `+0x34` field (R).
+The last two were emulated first (`updater-internals.md`) and are the safe way to work — details and
+the full update-path reasoning are in `partial-updates.md`.
 
 ## Compression: stay inside Leica's own limits
 
